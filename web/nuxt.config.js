@@ -28,6 +28,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~/plugins/axios',
   ],
   /*
   ** Nuxt.js dev-modules
@@ -43,15 +44,40 @@ export default {
     'bootstrap-vue/nuxt',
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    '@nuxtjs/auth',
     '@nuxtjs/pwa',
     // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv',
   ],
+  router: {
+
+  },
+  auth: {
+    localStorage: false,
+    redirect: {
+      login: '/',
+      logout: '/',
+      callback: '/',
+      home: '/'
+    },
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: '/api/oauth/token', method: 'post', propertyName: false },
+          logout: false,
+        }
+      }
+    },
+    plugins: [
+      '~/plugins/auth',
+    ],
+  },
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
+    baseURL: 'http://localhost:8000'
   },
   /*
   ** Build configuration
@@ -62,5 +88,5 @@ export default {
     */
     extend (config, ctx) {
     }
-  }
+  },
 }

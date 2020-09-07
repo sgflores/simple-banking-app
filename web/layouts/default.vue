@@ -52,4 +52,12 @@ html {
   color: #fff;
   background-color: #35495e;
 }
+
+body {
+    background-image: url("/bg-background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #cccccc;
+}
+
 </style>
