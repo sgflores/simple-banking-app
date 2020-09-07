@@ -57,17 +57,19 @@ class AccountTransactionController extends Controller
 
             $from = $this->accountService->getInfo($request->from);
 
-            $convertedAmount = $this->currencyService->convertAmount($request->currency, $from->currency, $request->amount);
-
-            if (!$this->accountService->isSufficientBalance($from, $convertedAmount)) {
+            if (!$this->accountService->isSufficientBalance($from, $request->amount)) {
                 throw new InsufficientBalanceException();
             }
 
-            $this->accountService->withdraw($from, $convertedAmount);
+            $this->accountService->withdraw($from, $request->amount);
 
             $to = $this->accountService->getInfo($request->to);
 
-            $this->accountService->deposit($to, $request->amount);
+            $convertedAmount = $this->currencyService->convertAmount($from->currency, $request->currency, $request->amount);
+
+            $this->accountService->deposit($to, $convertedAmount);
+
+            $request['currency'] = $from->currency;
 
             return $this->transactionService->save($request);
 

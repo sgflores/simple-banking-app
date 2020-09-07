@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container mt-50" v-if="loading">
+    <div class="container mt-2" v-if="loading">
       <br>
        <b-card>
         Loading...
@@ -8,6 +8,7 @@
     </div>
 
     <div class="container mt-2" v-if="!loading">
+      <br>
        <b-card no-body>
         <b-tabs pills card vertical>
           <b-tab title="Account Info" active>
@@ -19,7 +20,7 @@
                 <div>
                   Balance:
                   <code
-                    >{{ account.currency_info.code}}{{ account.balance }}</code
+                    >{{ account.currency_info.code}} {{ account.balance }}</code
                   >
                 </div>
               </b-card-text>
@@ -29,21 +30,9 @@
             </b-card>
             
               <b-card  header="New Payment" v-if="showForm">
-              <b-form @submit="onSubmit">
-                <b-form-group id="input-group-1" label="To:" label-for="input-1">
-                  <b-form-input
-                    id="input-1"
-                    size="sm"
-                    v-model="payment.to"
-                    type="number"
-                    required
-                    placeholder="Destination ID"
-                  ></b-form-input>
-                </b-form-group>
-
-                <b-form-group id="input-group-2" label="Amount:" label-for="input-2">
-                  <b-input-group prepend="$" size="sm">
-                    <b-form-input
+                <b-form-group id="input-group-2" label="You Send:" label-for="input-2">
+                  <b-input-group :prepend="account.currency" size="sm">
+                    <b-form-input @change="convertAmount"
                       id="input-2"
                       v-model="payment.amount"
                       type="number"
@@ -52,6 +41,46 @@
                     ></b-form-input>
                   </b-input-group>
                 </b-form-group>
+
+             
+              <b-form @submit.prevent="onSubmit">
+
+                <b-form-group id="input-group-1" label="To:" label-for="input-1">
+                  <b-form-input
+                    id="input-1"
+                    size="sm"
+                    v-model="payment.to"
+                    type="number"
+                    step="any"
+                    required
+                    placeholder="Destination ID"
+                  ></b-form-input>
+                </b-form-group>
+                
+                
+                  <div class="row">
+                  <div class="col-sm-3">
+                    <b-form-group id="input-group-2" label="Currency" label-for="input-3">
+                      <b-form-select v-model="payment.currency" :options="currencies" @change="convertAmount"
+                        value-field="code" text-field="code">
+                      </b-form-select>
+                    </b-form-group>
+                  </div>
+                  <div class="col-sm-9">
+                     <b-form-group id="input-group-2" label="Converted Amount" label-for="input-3">
+                        <b-form-input
+                        id="input-2"
+                        v-model="payment.convertedAmount"
+                        :readonly="true"
+                        type="number"
+                        required
+                        placeholder="Converted Amount"
+                      ></b-form-input>
+                    </b-form-group>
+                    
+                  </div>
+                </div>
+                
 
                 <b-form-group id="input-group-3" label="Details:" label-for="input-3">
                   <b-form-input
@@ -89,18 +118,20 @@
 <script>
 import Vue from "vue";
 
-export default { 
-  layout: 'main',
+export default {
   data() {
     return {
       showForm: false,
       payment: {
+        amount: 1,
+        convertedAmount: 1,
         currency: 'USD',
       },
 
       account: null,
       transactions: null,
       currencies: null,
+      newAmount: 0,
 
       errors: [],
 
@@ -109,8 +140,8 @@ export default {
   },
 
   mounted() {
-    console.log(this.$store.getters);
     this.loadAccount();
+    this.loadCurrencies();
   },
 
   methods: {
@@ -118,15 +149,31 @@ export default {
         await this.$auth.logout();
         this.$router.push('/');
     },
+    async convertAmount() {
+      if (!this.payment.amount) return;
+      const {data} = await this.$axios.get(`http://localhost:8000/api/currencies/convertAmount`, {
+        params: {
+          currencyFrom: this.account.currency,
+          currencyTo: this.payment.currency,
+          amount: this.payment.amount
+        }
+      });
+      this.payment.convertedAmount = data;
+    },
     async loadAccount() {
       const account = await this.$axios.get(`http://localhost:8000/api/accounts/${this.$route.params.id}`);
       this.account = account.data;
+      this.payment.currency = this.account.currency;
       await this.loadTransactions();
       this.loading = false;
     },
     async loadTransactions()  {
       const {data} = await this.$axios.get(`http://localhost:8000/api/accounts/${this.$route.params.id}/transactions`);
       this.transactions = data.data;
+    },
+    async loadCurrencies()  {
+      const {data} = await this.$axios.get(`http://localhost:8000/api/currencies`);
+      this.currencies = data.data;
     },
     async onSubmit(evt) {
       var that = this;
@@ -135,7 +182,7 @@ export default {
       this.errors = '';
       const response = await this.$axios.post(`http://localhost:8000/api/accounts/${this.$route.params.id}/transactions`, this.payment)
       .then(response => {
-        that.loadTransactions();
+        that.loadAccount();
         that.showForm = false;
         that.form = {currency: 'USD'}
       })

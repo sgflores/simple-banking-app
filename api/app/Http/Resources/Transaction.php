@@ -17,14 +17,14 @@ class Transaction extends JsonResource
      */
     public function toArray($request)
     {
-        $transactionType = request()->id == $this->from ? '-' : '+';
-        $currencyCode = (new CurrencyResource($this->whenLoaded('currencyInfo')))->symbol ?? '';
+        $transactionType = request()->id == $this->from ? '- ' : '+ ';
         return [
             'id' => $this->id,
             'from' => (new AccountResource($this->whenLoaded('fromInfo')))->name ?? '',
             'to' => (new AccountResource($this->whenLoaded('toInfo')))->name ?? '',
             'details' => $this->details,
-            'amount' => $transactionType.$currencyCode.number_format($this->amount, 2),
+            'amount' => $transactionType.$this->currency.' '.number_format($this->amount, 2),
+            'date' => date('m/d/Y', strtotime($this->created_at))
         ];
     }
 }

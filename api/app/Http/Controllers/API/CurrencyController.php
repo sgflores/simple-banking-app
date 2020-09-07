@@ -25,4 +25,23 @@ class CurrencyController extends Controller
     { 
         return new CurrencyCollection($this->currencyService->all());
     }
+
+    /**
+     * 
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function convertAmount(Request $request)
+    { 
+        $request->validate([
+            'currencyFrom' => 'required',
+            'currencyTo' => 'required',
+            'amount' => 'required'
+        ]);
+        $convertedAmount = $this->currencyService->convertAmount($request->currencyFrom, 
+            $request->currencyTo, 
+            $request->amount);
+        return number_format($convertedAmount, 2);
+    }
+
 }

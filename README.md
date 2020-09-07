@@ -16,7 +16,7 @@
 
 `$ composer install`
 
-**Step 4:** Next, create a .env file at the root of the api project and populate it with the content found in the .env.example file.
+**Step 4:** Next, create a .env file at the root of the api project and populate it with the content found in the .env.example file. NOTE: You will also have to update your db credentials
 
 `$ cp .env.example .env`
 
@@ -65,4 +65,4 @@ Now after the backend setup is done lets move to the frontend
 
 **Step 6:** Now we can access the web in this url 
 
-`http://localhost:3000/`
+`http://localhost:3000/` or it with a different port depending in your machine

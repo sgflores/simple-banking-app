@@ -18,6 +18,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/auth/user', function() {
+    return '';
+});
+
 Route::middleware('client_credentials')->group(function () {
         
     Route::get('accounts/{id}', 'API\AccountController\AccountInfoController@show');
@@ -27,5 +31,6 @@ Route::middleware('client_credentials')->group(function () {
     Route::post('accounts/{id}/transactions', 'API\AccountController\AccountTransactionController@store');
 
     Route::get('currencies', 'API\CurrencyController@index');
+    Route::get('currencies/convertAmount', 'API\CurrencyController@convertAmount');
 
 });

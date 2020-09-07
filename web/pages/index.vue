@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div>
-      <b-form>
+      <b-form @submit.prevent="login">
         <b-form-group
           id="input-group-2"
           label="Enter your account ID:"
@@ -45,8 +45,9 @@ export default Vue.extend({
         this.$auth.setToken('local', 'Bearer ' + data.access_token);
         this.$auth.setRefreshToken('local', data.refresh_token);
         this.$axios.setHeader('Authorization', 'Bearer ' + data.access_token);
+
+        this.$router.push(`/accounts/${this.accountID}`);
         
-        this.$router.push('/accounts/'+this.accountID);
       
     }
   }

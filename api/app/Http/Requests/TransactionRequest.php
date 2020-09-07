@@ -33,7 +33,7 @@ class TransactionRequest extends FormRequest
             'to' => 'required|numeric|different:from|exists:accounts,id',
             'details' => 'required',
             'currency' => "required|in:$validCurrencies",
-            'amount' => 'required|numeric'
+            'amount' => 'required|numeric|min:0|not_in:0'
         ];
     }
 
