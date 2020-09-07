@@ -1,5 +1,6 @@
 <?php
 
+use App\Account;
 use Illuminate\Database\Seeder;
 
 class AccountsTableSeeder extends Seeder
@@ -11,14 +12,20 @@ class AccountsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('accounts')->insert([
+        $usd = Config::get('constants.currency.usd');
+
+        Account::create([
             'name' => 'John',
-            'balance' => 15000
+            'currency' => $usd,
+            'balance' => 15000,
         ]);
 
-        DB::table('accounts')->insert([
+        Account::create([
             'name' => 'Peter',
-            'balance' => 100000
+            'currency' => $usd,
+            'balance' => 100000,
         ]);
+
     }
+
 }
