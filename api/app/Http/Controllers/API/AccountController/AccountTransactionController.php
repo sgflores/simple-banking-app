@@ -65,11 +65,13 @@ class AccountTransactionController extends Controller
 
             $to = $this->accountService->getInfo($request->to);
 
-            $convertedAmount = $this->currencyService->convertAmount($from->currency, $request->currency, $request->amount);
+            // convert requested amount to selected currency
+            $convertedRequestAmount = $this->currencyService->convertAmount($from->currency, $to->currency, $request->amount);
 
-            $this->accountService->deposit($to, $convertedAmount);
+            $this->accountService->deposit($to, $convertedRequestAmount);
 
-            $request['currency'] = $from->currency;
+            $request['from_amount'] = $request->amount;
+            $request['to_amount'] = $convertedRequestAmount;
 
             return $this->transactionService->save($request);
 

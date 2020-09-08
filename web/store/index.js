@@ -11,13 +11,9 @@ export const state = () => ({
 });
 
 export const mutations = {
-    setToken(state, token) {
-        state.token = token;
-    }
+    
 };
 
 export const actions = {
-    setToken(context, token) {
-        context.commit('setToken', token);
-    }
+
 };

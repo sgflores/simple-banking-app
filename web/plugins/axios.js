@@ -14,8 +14,5 @@ export default function ({ store, $axios, redirect, localStorage }) {
       if (code === 401 || code === 404) {
         redirect('/')
       }
-      if (code == 422) {
-        
-      }
     });
   }

@@ -36,7 +36,7 @@
 
 `$ php artisan serve`
 
-**Step 8:** Our backend api should be accessible in http://127.0.0.1:8000
+**Step 8:** Our backend api should be accessible in `http://127.0.0.1:8000` or with a different port depending in your machine
 
 ### FronteEnd
 Now after the backend setup is done lets move to the frontend
@@ -53,8 +53,9 @@ Now after the backend setup is done lets move to the frontend
 
 `$ cp .env.example .env`
 
-**Step 4:** After .env file has been created the next step is to update our client credentials. These credentials has been generated from passport installation in the backend. It may look something like this
+**Step 4:** After .env file has been created the next step is to update our client credentials. These credentials has been generated from passport installation in the backend. Notice also the APP_URL, you might have to change the port depending on the port being used when you run `php artisan serve` in the backend
 
+`APP_URL=http://localhost:8000`
 `grant_type=client_credentials`
 `client_id=1`
 `client_secret=***`
@@ -66,3 +67,13 @@ Now after the backend setup is done lets move to the frontend
 **Step 6:** Now we can access the web in this url 
 
 `http://localhost:3000/` or it with a different port depending in your machine
+
+### TESTING
+Currently API testing is only available. You can test the application by going into the api directory and run the following command
+
+`$ cd api`
+
+`$ composer test`
+
+### NOTE: 
+Authentication **IS NOT** in the scope of this assignment. Getting the transactions list with the request `GET /accounts/<id>/transactions` is not a security hole.

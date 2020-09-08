@@ -16,9 +16,10 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('from')->unsigned();
+            $table->float('from_amount');
             $table->bigInteger('to')->unsigned();
+            $table->float('to_amount');
             $table->text('details');
-            $table->float('amount');
             $table->timestamps();
         });
     }

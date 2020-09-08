@@ -25,11 +25,14 @@
                 </div>
               </b-card-text>
               <b-button size="sm" variant="success" @click="showForm = !showForm"
-                >New payment</b-button
+                >New Payment</b-button
               >
             </b-card>
             
-              <b-card  header="New Payment" v-if="showForm">
+              <b-card header="New Payment" v-if="showForm">
+             
+              <b-form @submit.prevent="onSubmit">
+
                 <b-form-group id="input-group-2" label="You Send:" label-for="input-2">
                   <b-input-group :prepend="account.currency" size="sm">
                     <b-form-input @change="convertAmount"
@@ -41,9 +44,6 @@
                     ></b-form-input>
                   </b-input-group>
                 </b-form-group>
-
-             
-              <b-form @submit.prevent="onSubmit">
 
                 <b-form-group id="input-group-1" label="To:" label-for="input-1">
                   <b-form-input
@@ -81,7 +81,6 @@
                   </div>
                 </div>
                 
-
                 <b-form-group id="input-group-3" label="Details:" label-for="input-3">
                   <b-form-input
                     id="input-3"
@@ -131,9 +130,6 @@ export default {
       account: null,
       transactions: null,
       currencies: null,
-      newAmount: 0,
-
-      errors: [],
 
       loading: true
     };
@@ -151,7 +147,7 @@ export default {
     },
     async convertAmount() {
       if (!this.payment.amount) return;
-      const {data} = await this.$axios.get(`http://localhost:8000/api/currencies/convertAmount`, {
+      const {data} = await this.$axios.get(`/api/currencies/convertAmount`, {
         params: {
           currencyFrom: this.account.currency,
           currencyTo: this.payment.currency,
@@ -161,36 +157,34 @@ export default {
       this.payment.convertedAmount = data;
     },
     async loadAccount() {
-      const account = await this.$axios.get(`http://localhost:8000/api/accounts/${this.$route.params.id}`);
+      const account = await this.$axios.get(`/api/accounts/${this.$route.params.id}`);
       this.account = account.data;
       this.payment.currency = this.account.currency;
       await this.loadTransactions();
       this.loading = false;
     },
     async loadTransactions()  {
-      const {data} = await this.$axios.get(`http://localhost:8000/api/accounts/${this.$route.params.id}/transactions`);
+      const {data} = await this.$axios.get(`/api/accounts/${this.$route.params.id}/transactions`);
+      (data.data || []).map(data => {
+        delete data['from_amount'];
+        delete data['to_amount'];
+      });
       this.transactions = data.data;
     },
     async loadCurrencies()  {
-      const {data} = await this.$axios.get(`http://localhost:8000/api/currencies`);
+      const {data} = await this.$axios.get(`/api/currencies`);
       this.currencies = data.data;
     },
-    async onSubmit(evt) {
-      var that = this;
-
-      evt.preventDefault();
-      this.errors = '';
-      const response = await this.$axios.post(`http://localhost:8000/api/accounts/${this.$route.params.id}/transactions`, this.payment)
+    async onSubmit() {
+      const that = this;
+      await this.$axios.post(`/api/accounts/${this.$route.params.id}/transactions`, this.payment)
       .then(response => {
         that.loadAccount();
         that.showForm = false;
-        that.form = {currency: 'USD'}
       })
       .catch(error => {
-        that.errors = error.response.data.errors || error.response.data;
-        alert(JSON.stringify(that.errors));
+        alert(JSON.stringify(error.response.data.errors || error.response.data));
       });
-
     },
   }
 };

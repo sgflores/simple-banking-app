@@ -47,17 +47,17 @@ class AccountInfoTest extends TestCase
 
         $transactions = Transaction::create([
             'from' => $accountFrom->id, 
+            'from_amount' => 1,
             'to' => $accountTo->id,
+            'to_amount' => 1,
             'details' => 'test',
-            'currency' => $this->defaultCurrency,
-            'amount' => 1000
         ]);
 
         $this->getJson('/api/accounts/'.$accountFrom->id.'/transactions')
         ->assertSuccessful()
         ->assertJsonStructure([
             'data' => [ 
-                '*' => [  'id', 'from', 'to', 'details', 'amount' ] 
+                '*' => [  'id', 'from', 'from_amount', 'to', 'to_amount' ] 
             ]
         ]);
     }

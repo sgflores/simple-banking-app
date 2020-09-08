@@ -55,7 +55,7 @@ class AccountTransactonTest extends TestCase
             'balance' => 10
         ]);
 
-        $transaction = [
+        $request = [
             'from' => $accountFrom->id, 
             'to' => $accountTo->id,
             'details' => 'test',
@@ -64,7 +64,7 @@ class AccountTransactonTest extends TestCase
         ];
         
         // transfer money
-        $this->postJson('/api/accounts/'.$accountFrom->id.'/transactions', $transaction)
+        $this->postJson('/api/accounts/'.$accountFrom->id.'/transactions', $request)
         ->assertStatus(403);
         
     }
@@ -95,25 +95,25 @@ class AccountTransactonTest extends TestCase
             'from' => $accountFrom->id, 
             'to' => $accountTo->id,
             'details' => 'test',
-            'currency' => $this->defaultCurrency,
+            'currency' => 'PHP',
             'amount' => 1
         ];
 
         // transfer money
-        $this->postJson('/api/accounts/'.$accountFrom->id.'/transactions', $transaction)
+        $transaction = $this->postJson('/api/accounts/'.$accountFrom->id.'/transactions', $transaction)
         ->assertSuccessful()
-        ->assertJsonStructure(['id', 'from', 'to', 'details', 'currency', 'amount' ]);
-        
-        $convertedAmount = $this->convertAmount($transaction['currency'], $accountFrom->currency, $transaction['amount']);
+        ->assertJsonStructure(['id', 'from', 'from_amount', 'to', 'to_amount', 'details']);
 
+        $transaction = $transaction->decodeResponseJson();
+        
         // check running balance is correct after withdrawal
         $runningBalance = $this->getCurrentBalance($accountFrom->id);
-        $newBalance = (floatval($accountFrom->balance) - floatval($convertedAmount));
+        $newBalance = (floatval($accountFrom->balance) - floatval($transaction['from_amount']));
         $this->assertEquals($runningBalance, $newBalance);
 
         // check running balance is correct after deposit
         $runningBalance = $this->getCurrentBalance($accountTo->id);
-        $newBalance = (floatval($accountTo->balance) + floatval($convertedAmount));
+        $newBalance = (floatval($accountTo->balance) + floatval($transaction['to_amount']));
         $this->assertEquals($runningBalance, $newBalance);
 
     }
