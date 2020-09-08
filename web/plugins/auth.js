@@ -1,7 +1,6 @@
 export default function ({ $auth, $router }) {
+    // console.log($auth);
     if (!$auth.loggedIn) {
       return;
     }
-  
-    const username = $auth.user.username
 }

@@ -36,19 +36,18 @@ export default Vue.extend({
   components: {},
   methods: {
     async login() {
-        const {data} = await this.$axios.post('http://localhost:8000/api/oauth/token', {
+        const {data} = await this.$axios.post('/api/oauth/token', {
           "grant_type": this.$store.state.env.grant_type,
           "client_id": this.$store.state.env.client_id,
           "client_secret": this.$store.state.env.client_secret
         });
-
+        
         this.$auth.setToken('local', 'Bearer ' + data.access_token);
         this.$auth.setRefreshToken('local', data.refresh_token);
         this.$axios.setHeader('Authorization', 'Bearer ' + data.access_token);
 
         this.$router.push(`/accounts/${this.accountID}`);
         
-      
     }
   }
 });

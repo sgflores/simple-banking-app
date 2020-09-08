@@ -52,32 +52,13 @@ export default {
   router: {
 
   },
-  auth: {
-    localStorage: false,
-    redirect: {
-      login: '/',
-      logout: '/',
-      callback: '/',
-      home: '/'
-    },
-    strategies: {
-      local: {
-        endpoints: {
-          login: { url: '/api/oauth/token', method: 'post', propertyName: false },
-          logout: false,
-        }
-      }
-    },
-    plugins: [
-      '~/plugins/auth',
-    ],
-  },
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: 'http://localhost:8000'
+    baseURL: process.env.APP_URL,
+    credentials: true,
   },
   /*
   ** Build configuration
@@ -89,4 +70,10 @@ export default {
     extend (config, ctx) {
     }
   },
+  components: true,
+  auth: {
+    plugins: [
+      '~/plugins/auth',
+    ],
+  }
 }
