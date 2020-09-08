@@ -76,4 +76,4 @@ Currently API testing is only available. You can test the application by going i
 `$ composer test`
 
 ### NOTE: 
-Authentication **IS NOT** in the scope of this assignment. Getting the transactions list with the request `GET /accounts/<id>/transactions` is not a security hole.
+Authentication **IS NOT** in the scope of this assignment. Getting the transactions list with the request `GET /api/accounts/<id>/transactions` is not a security hole.
