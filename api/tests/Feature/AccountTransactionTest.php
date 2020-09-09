@@ -65,7 +65,7 @@ class AccountTransactonTest extends TestCase
         
         // transfer money
         $this->postJson('/api/accounts/'.$accountFrom->id.'/transactions', $request)
-        ->assertStatus(403);
+        ->assertStatus(422);
         
     }
 

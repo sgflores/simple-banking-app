@@ -57,9 +57,10 @@ class AccountTransactionController extends Controller
 
             $from = $this->accountService->getInfo($request->from);
 
-            if (!$this->accountService->isSufficientBalance($from, $request->amount)) {
+            // moved to TransactionRequest
+            /*if (!$this->accountService->isSufficientBalance($from, $request->amount)) {
                 throw new InsufficientBalanceException();
-            }
+            }*/
 
             $this->accountService->withdraw($from, $request->amount);
 

@@ -54,10 +54,10 @@ html {
 }
 
 body {
-    background-image: url("/bg-background.jpg");
+    background: url("/bg-background.jpg");
     background-repeat: no-repeat;
     background-size: cover;
-    background-color: #cccccc;
+    background-color: #dcdcdc;
 }
 
 </style>

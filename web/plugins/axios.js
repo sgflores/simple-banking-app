@@ -1,4 +1,4 @@
-export default function ({ store, $axios, redirect, localStorage }) {
+export default function ({ store, $axios, redirect, $toast }) {
     
     $axios.defaults.baseURL = store.state.env.APP_URL;
 

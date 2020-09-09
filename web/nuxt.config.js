@@ -29,6 +29,8 @@ export default {
   */
   plugins: [
     '~/plugins/axios',
+    '~/plugins/vform.js',
+    '~/plugins/sweetalert.js',
   ],
   /*
   ** Nuxt.js dev-modules

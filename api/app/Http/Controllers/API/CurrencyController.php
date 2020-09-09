@@ -41,7 +41,7 @@ class CurrencyController extends Controller
         $convertedAmount = $this->currencyService->convertAmount($request->currencyFrom, 
             $request->currencyTo, 
             $request->amount);
-        return number_format($convertedAmount, 2);
+        return $convertedAmount;
     }
 
 }

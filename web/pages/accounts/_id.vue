@@ -10,7 +10,7 @@
     <div class="container mt-2" v-else>
       <br>
        <b-card no-body>
-        <b-tabs pills card vertical>
+        <b-tabs pills card >
           <b-tab title="Account Info" active>
             
             <account-info :account="account" v-on:showPaymentHandler="showForm = true" v-if="!showForm"></account-info>
@@ -76,14 +76,18 @@ export default {
     },
     async onSubmit(payment) {
       const that = this;
-      this.$axios.post(`/api/accounts/${this.account.id}/transactions`, payment)
+      payment.post(`/api/accounts/${this.account.id}/transactions`)
       .then(response => {
         that.loadAccountInfo();
         that.showForm = false;
         that.$refs.paymentForm.resetForm();
+        that.$toast.fire({
+          icon: 'success',
+          title: 'Transaction Completed'
+        });
       })
       .catch(error => {
-        alert(JSON.stringify(error.response.data.errors || error.response.data));
+        
       });
     },
   }

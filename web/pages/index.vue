@@ -2,7 +2,7 @@
   <div class="container">
     <div>
       <b-form @submit.prevent="login">
-        <b-form-group
+        <b-form-group class="text-bold"
           id="input-group-2"
           label="Enter your account ID:"
           label-for="input-2"
@@ -83,5 +83,9 @@ export default Vue.extend({
 
 .links {
   padding-top: 15px;
+}
+.text-bold {
+  font-weight: bolder;
+  color: #fff;
 }
 </style>

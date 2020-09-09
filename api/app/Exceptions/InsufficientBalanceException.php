@@ -14,6 +14,10 @@ class InsufficientBalanceException extends Exception
      */
     public function render($request)
     {
-        return response()->json('Insufficient Balance', 403);
+        return response()->json([
+            'errors' => [
+                'amount' => 'Insufficient Account Balance'
+            ]
+        ], 422);
     }
 }

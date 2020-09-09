@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Account;
 use Illuminate\Foundation\Http\FormRequest;
 use AshAllenDesign\LaravelExchangeRates\Classes\ExchangeRate;
 
@@ -28,12 +29,14 @@ class TransactionRequest extends FormRequest
         $validCurrencies = (new ExchangeRate())->currencies();
         $validCurrencies = implode(',', $validCurrencies);
 
+        $balance = Account::find(request()->from)->balance ?? 0;
+
         return [
             'from' => 'required|numeric|different:to|exists:accounts,id',
             'to' => 'required|numeric|different:from|exists:accounts,id',
             'details' => 'required',
             'currency' => "required|in:$validCurrencies",
-            'amount' => 'required|numeric|min:0|not_in:0'
+            'amount' => "required|numeric|min:0|not_in:0|max:$balance"
         ];
     }
 
@@ -42,6 +45,7 @@ class TransactionRequest extends FormRequest
         return [
             'from.different' => 'Cannot transfer to own account',
             'to.different' => 'Cannot transfer to own account',
+            'amount.max' => 'Insufficient account balance',
         ];
     }
 
